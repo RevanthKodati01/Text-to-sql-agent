@@ -119,11 +119,21 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab_query, tab_dataset = st.tabs(["🔍  Query", "📋  Dataset"])
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "query"
 
-# ── Query tab ─────────────────────────────────────────────────────────────────
+nav = st.radio(
+    "nav", ["🔍  Query", "📋  Dataset"],
+    index=0 if st.session_state.active_tab == "query" else 1,
+    horizontal=True,
+    label_visibility="collapsed",
+)
+st.session_state.active_tab = "query" if nav.startswith("🔍") else "dataset"
+st.divider()
 
-with tab_query:
+# ── Query view ────────────────────────────────────────────────────────────────
+
+if st.session_state.active_tab == "query":
     question = st.text_input(
         "question",
         value=st.session_state.pop("prefill_q", ""),
@@ -166,12 +176,30 @@ with tab_query:
         else:
             _sql_card(db_path, pred_sql, "🤖 Predicted SQL")
 
-# ── Dataset tab ───────────────────────────────────────────────────────────────
+# ── Dataset view ─────────────────────────────────────────────────────────────
 
-with tab_dataset:
+elif st.session_state.active_tab == "dataset":
     jsonl_files = sorted(DATA_DIR.glob("*.jsonl"))
     if not jsonl_files:
-        st.info("No .jsonl files in data/.  Run `python -m texttosql seed` first.")
+        st.markdown("""
+<div class="card">
+<div class="card-label">No datasets found</div>
+
+To use the Dataset tab, download and convert the BIRD benchmark:
+
+```bash
+# 1. Download BIRD mini-dev (~764 MB)
+curl -L -o data/minidev.zip https://bird-bench.oss-cn-beijing.aliyuncs.com/minidev.zip
+unzip data/minidev.zip -d data/bird_minidev
+
+# 2. Convert to harness format
+python scripts/bird_to_jsonl.py \\
+  --bird-json data/bird_minidev/minidev/MINIDEV/mini_dev_sqlite.json \\
+  --db-dir    data/bird_minidev/minidev/MINIDEV/dev_databases \\
+  --out       data/bird_dev.jsonl
+```
+</div>
+        """, unsafe_allow_html=True)
         st.stop()
 
     chosen = st.selectbox("Dataset file", [f.name for f in jsonl_files])
@@ -218,4 +246,5 @@ with tab_dataset:
             if st.button("Load into Query →", type="primary"):
                 st.session_state["prefill_q"]    = row.question.split("\nHint:")[0]
                 st.session_state["prefill_gold"] = row.gold_sql
+                st.session_state["active_tab"]   = "query"
                 st.rerun()

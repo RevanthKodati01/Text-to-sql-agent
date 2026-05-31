@@ -86,6 +86,10 @@ div[data-testid="stButton"] > button[kind="primary"]:hover { opacity: 0.88 !impo
     color: #e2e8f0 !important;
     font-size: 0.95rem !important;
 }
+.stTextInput input::placeholder, .stTextArea textarea::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
+}
 .stTextInput input:focus, .stTextArea textarea:focus {
     border-color: #6366f1 !important;
     box-shadow: 0 0 0 2px #6366f133 !important;
@@ -104,10 +108,26 @@ div[data-testid="stButton"] > button[kind="primary"]:hover { opacity: 0.88 !impo
 [data-testid="stSidebar"] label { color: #94a3b8 !important; font-size: 0.8rem !important; font-weight: 500 !important; }
 [data-testid="stSidebar"] .stSlider { padding-bottom: 0.5rem; }
 
-/* ── Tabs ─────────────────────────────────────────────────────── */
-.stTabs [data-baseweb="tab-list"]    { background: transparent; gap: 0.4rem; }
-.stTabs [data-baseweb="tab"]         { border-radius: 0.5rem !important; padding: 0.4rem 1.1rem !important; }
-.stTabs [aria-selected="true"]       { background: #6366f1 !important; color: white !important; }
-.stTabs [aria-selected="false"]      { color: #94a3b8 !important; }
+/* ── Nav radio styled as tab pills ───────────────────────────── */
+div[data-testid="stRadio"] > div[role="radiogroup"] {
+    display: flex; flex-direction: row; gap: 0.4rem; background: transparent;
+}
+div[data-testid="stRadio"] label {
+    background: #1e1e2e !important;
+    border: 1px solid #2d2d3f !important;
+    border-radius: 0.5rem !important;
+    padding: 0.35rem 1.1rem !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+div[data-testid="stRadio"] label:has(input:checked) {
+    background: #6366f1 !important;
+    color: white !important;
+    border-color: #6366f1 !important;
+}
+div[data-testid="stRadio"] label > div:first-child { display: none !important; }
+div[data-testid="stRadio"] > label { display: none !important; }
 </style>
 """
