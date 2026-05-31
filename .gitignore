@@ -1,0 +1,20 @@
+# Environment
+.env
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Data — download with scripts/bird_to_jsonl.py
+data/*.db
+data/*.zip
+data/*.jsonl
+data/bird_minidev/
+data/bird_mini_dev/
+!data/.gitkeep
